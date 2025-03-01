@@ -20,7 +20,13 @@ class Game {
 
     this.board = new Board(this.rows, this.cols, this.tileSize);
     this.enemies = [
-      new CapturedEnemy(0, 1, this.board, this.handleCollision.bind(this)),
+      new CapturedEnemy(
+        this.board.cols - 1,
+        this.board.rows,
+        this.board,
+        this.handleCollision.bind(this)
+      ),
+
       new FreeEnemy(10, 10, this.board, this.handleCollision.bind(this)),
       new FreeEnemy(30, 5, this.board, this.handleCollision.bind(this)),
       new FreeEnemy(5, 25, this.board, this.handleCollision.bind(this)),
