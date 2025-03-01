@@ -50,8 +50,6 @@ class Game {
   initEventListeners() {
     this.canvas.addEventListener("touchstart", this.handleTouchStart.bind(this), false);
     this.canvas.addEventListener("touchmove", this.handleTouchMove.bind(this), false);
-    this.canvas.addEventListener("touchend", this.handleTouchEnd.bind(this), false);
-    this.canvas.addEventListener("touchcancel", this.handleTouchEnd.bind(this), false);
   }
 
   handleTouchStart(event) {
@@ -62,30 +60,25 @@ class Game {
   }
 
   handleTouchMove(event) {
-    if (event.touches.length === 1) {
-      const touchEndX = event.touches[0].clientX;
-      const touchEndY = event.touches[0].clientY;
-
-      const deltaX = touchEndX - this.touchStartX;
-      const deltaY = touchEndY - this.touchStartY;
-
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        // Movimiento horizontal
-        this.direction = deltaX > 0 ? "right" : "left";
-      } else {
-        // Movimiento vertical
-        this.direction = deltaY > 0 ? "down" : "up";
-      }
-
-      if (!this.paused) {
-        this.wasOutside = false;
-        this.moving = true;
-      }
+    if (!event.touches.length === 1 || this.player.paused) {
+      return;
     }
-  }
 
-  handleTouchEnd(event) {
-    // Opcional: Puedes resetear alguna variable si es necesario al finalizar el toque.
+    this.player.wasOutside = false;
+    this.player.moving = true;
+    this.player.direction = event.key;
+
+    const touchEndX = event.touches[0].clientX;
+    const touchEndY = event.touches[0].clientY;
+
+    const deltaX = touchEndX - this.touchStartX;
+    const deltaY = touchEndY - this.touchStartY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      this.player.direction = deltaX > 0 ? "ArrowRight" : "ArrowLeft";
+    } else {
+      this.player.direction = deltaY > 0 ? "ArrowDown" : "ArrowUp";
+    }
   }
 
   start() {
