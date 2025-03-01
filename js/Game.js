@@ -49,7 +49,7 @@ class Game {
 
   initEventListeners() {
     this.canvas.addEventListener("touchstart", this.handleTouchStart.bind(this), false);
-    this.canvas.addEventListener("touchmove", this.handleTouchMove.bind(this), false);
+    this.canvas.addEventListener("touchmove", this.handleTouchMove.bind(this), { passive: false });
   }
 
   handleTouchStart(event) {
@@ -60,6 +60,8 @@ class Game {
   }
 
   handleTouchMove(event) {
+    event.preventDefault();
+
     if (!event.touches.length === 1 || this.player.paused) {
       return;
     }
