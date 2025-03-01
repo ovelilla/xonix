@@ -6,12 +6,11 @@ class Player {
     ArrowRight: { x: 1, y: 0 },
   };
 
-  constructor(x, y, tileSize, board, onCaptureArea, onCollision) {
+  constructor(x, y, board, onCaptureArea, onCollision) {
     this.initialX = x;
     this.initialY = y;
     this.x = x;
     this.y = y;
-    this.tileSize = tileSize;
     this.board = board;
     this.direction = null;
     this.moving = false;

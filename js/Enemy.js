@@ -6,12 +6,11 @@ class Enemy {
     { x: -1, y: -1 },
   ];
 
-  constructor(x, y, tileSize, board, onCollision) {
+  constructor(x, y, board, onCollision) {
     this.initialX = x;
     this.initialY = y;
     this.x = x;
     this.y = y;
-    this.tileSize = tileSize;
     this.board = board;
     this.direction = this.getRandomDirection();
     this.moving = true;
