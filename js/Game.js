@@ -4,7 +4,7 @@ import FreeEnemy from "./FreeEnemy.js";
 import Player from "./Player.js";
 import RegionFiller from "./RegionFiller.js";
 import Renderer from "./Renderer.js";
-
+import TouchControls from "./TouchControls.js";
 class Game {
   constructor(canvas) {
     this.canvas = canvas;
@@ -40,6 +40,7 @@ class Game {
     );
     this.renderer = new Renderer(canvas, this.board, this.player, this.enemies, 10);
     this.regionFiller = new RegionFiller(this.board, this.enemies);
+    this.touchControls = new TouchControls(this.canvas, this.player);
 
     this.running = false;
     this.lastTime = 0;
@@ -50,43 +51,6 @@ class Game {
     this.touchStartY = 0;
 
     this.adjustCanvasSize();
-    this.initEventListeners();
-  }
-
-  initEventListeners() {
-    this.canvas.addEventListener("touchstart", this.handleTouchStart.bind(this), false);
-    this.canvas.addEventListener("touchmove", this.handleTouchMove.bind(this), { passive: false });
-  }
-
-  handleTouchStart(event) {
-    if (event.touches.length === 1) {
-      this.touchStartX = event.touches[0].clientX;
-      this.touchStartY = event.touches[0].clientY;
-    }
-  }
-
-  handleTouchMove(event) {
-    event.preventDefault();
-
-    if (!event.touches.length === 1 || this.player.paused) {
-      return;
-    }
-
-    this.player.wasOutside = false;
-    this.player.moving = true;
-    this.player.direction = event.key;
-
-    const touchEndX = event.touches[0].clientX;
-    const touchEndY = event.touches[0].clientY;
-
-    const deltaX = touchEndX - this.touchStartX;
-    const deltaY = touchEndY - this.touchStartY;
-
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      this.player.direction = deltaX > 0 ? "ArrowRight" : "ArrowLeft";
-    } else {
-      this.player.direction = deltaY > 0 ? "ArrowDown" : "ArrowUp";
-    }
   }
 
   start() {
