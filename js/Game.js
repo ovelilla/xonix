@@ -134,12 +134,12 @@ class Game {
       const nextEx = ex + enemy.direction.x;
       const nextEy = ey + enemy.direction.y;
 
-      // if (
-      //   (this.board.isFreeCell(ex, ey) && this.board.isCapturedCell(nextEx, nextEy)) ||
-      //   (this.board.isCapturedCell(ex, ey) && this.board.isFreeCell(nextEx, nextEy))
-      // ) {
-      //   return;
-      // }
+      if (
+        (this.board.isFreeCell(ex, ey) && this.board.isCapturedCell(nextEx, nextEy)) ||
+        (this.board.isCapturedCell(ex, ey) && this.board.isFreeCell(nextEx, nextEy))
+      ) {
+        return;
+      }
 
       const next = [
         { x: -1, y: -1 },
