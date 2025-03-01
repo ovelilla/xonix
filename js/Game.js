@@ -75,6 +75,13 @@ class Game {
         console.log("Colisión detectada entre Player y Enemy");
         this.player.loseLife();
       }
+
+      if (this.board.isTrail(enemy.x, enemy.y)) {
+        console.log("Colisión detectada entre Enemy y rastro del Player");
+        this.player.loseLife();
+        this.board.clearPath();
+        // this.player.reset();
+      }
     });
   }
 

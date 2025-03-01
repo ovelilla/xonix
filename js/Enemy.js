@@ -25,7 +25,7 @@ class Enemy {
       nextX < this.board.cols &&
       nextY >= 0 &&
       nextY < this.board.rows &&
-      this.board.grid[nextY]?.[nextX] === 0
+      (this.board.grid[nextY][nextX] === 0 || this.board.grid[nextY][nextX] === 2)
     );
   }
 
