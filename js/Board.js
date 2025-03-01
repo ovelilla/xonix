@@ -23,7 +23,7 @@ class Board {
   }
 
   markPath(x, y) {
-    if (this.isValidPosition(x, y) && this.grid[y][x] === 0) {
+    if (this.isValidPosition(x, y) && this.getCellType(x, y) === 0) {
       this.grid[y][x] = 2;
     }
   }
@@ -52,18 +52,19 @@ class Board {
     return x >= 0 && x < this.cols && y >= 0 && y < this.rows;
   }
 
-  getCellColor(row, col) {
-    if (this.grid[row][col] === 1) return "DarkTurquoise";
-    if (this.grid[row][col] === 2) return "DeepPink";
-    return "black";
-  }
-  draw(ctx) {
-    for (let row = 0; row < this.rows; row++) {
-      for (let col = 0; col < this.cols; col++) {
-        ctx.fillStyle = this.getCellColor(row, col);
-        ctx.fillRect(col * this.tileSize, row * this.tileSize, this.tileSize, this.tileSize);
-      }
+  getCellType(x, y) {
+    if (!this.isValidPosition(x, y)) {
+      return null;
     }
+    return this.grid[y][x];
+  }
+
+  isCapturedArea(x, y) {
+    return this.getCellType(x, y) === 1;
+  }
+
+  isTrail(x, y) {
+    return this.getCellType(x, y) === 2;
   }
 }
 

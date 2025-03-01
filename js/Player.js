@@ -1,5 +1,3 @@
-import RegionFiller from "./RegionFiller.js";
-
 class Player {
   directionMap = {
     ArrowUp: { x: 0, y: -1 },
@@ -8,7 +6,7 @@ class Player {
     ArrowRight: { x: 1, y: 0 },
   };
 
-  constructor(x, y, tileSize, board, onGameOver, updateLives) {
+  constructor(x, y, tileSize, board, onGameOver, onLoseLife, onCaptureArea) {
     this.x = x;
     this.y = y;
     this.tileSize = tileSize;
@@ -19,9 +17,9 @@ class Player {
     this.lives = 3;
     this.lastSafeX = x;
     this.lastSafeY = y;
-    this.regionFiller = new RegionFiller(board);
     this.onGameOver = onGameOver;
-    this.updateLives = updateLives;
+    this.onLoseLife = onLoseLife;
+    this.onCaptureArea = onCaptureArea;
 
     this.initEventListeners();
   }
@@ -38,10 +36,6 @@ class Player {
       this.moving = true;
       this.direction = event.key;
     }
-  }
-
-  isInRestrictedArea() {
-    return this.board.grid[this.y][this.x] === 1;
   }
 
   move() {
@@ -69,14 +63,14 @@ class Player {
   }
 
   collidesWithTrail(x, y) {
-    return this.board.grid[y][x] === 2;
+    return this.board.isTrail(x, y);
   }
 
   updatePosition(x, y) {
     this.x = x;
     this.y = y;
 
-    if (this.wasOutside && this.isInRestrictedArea()) {
+    if (this.wasOutside && this.board.isCapturedArea(x, y)) {
       this.captureArea();
       return;
     }
@@ -85,13 +79,12 @@ class Player {
   }
 
   captureArea() {
-    this.regionFiller.fillSmallestZeroRegion();
-    this.board.capturePath();
+    this.onCaptureArea();
     this.stopMovement();
   }
 
   trackMovement() {
-    if (!this.isInRestrictedArea()) {
+    if (!this.board.isCapturedArea(this.x, this.y)) {
       this.wasOutside = true;
       this.board.markPath(this.x, this.y);
     } else {
@@ -107,31 +100,23 @@ class Player {
 
   loseLife() {
     this.lives -= 1;
-    this.updateLives(this.lives);
+    this.onLoseLife(this.lives);
 
     if (this.lives <= 0) {
-      console.log("Game Over: Te has quedado sin vidas.");
       this.onGameOver();
       return;
     }
-
-    console.log(`Perdiste una vida. Te quedan ${this.lives}`);
 
     this.board.clearPath();
 
     this.x = this.lastSafeX;
     this.y = this.lastSafeY;
-    this.moving = false;
-    this.direction = null;
+
+    this.stopMovement();
   }
 
   update() {
     this.move();
-  }
-
-  draw(ctx) {
-    ctx.fillStyle = "white";
-    ctx.fillRect(this.x * this.tileSize, this.y * this.tileSize, this.tileSize, this.tileSize);
   }
 }
 

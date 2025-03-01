@@ -1,6 +1,8 @@
 import Board from "./Board.js";
-import Player from "./Player.js";
 import Enemy from "./Enemy.js";
+import Player from "./Player.js";
+import RegionFiller from "./RegionFiller.js";
+import Renderer from "./Renderer.js";
 
 class Game {
   constructor(canvas) {
@@ -8,20 +10,22 @@ class Game {
     this.ctx = canvas.getContext("2d");
 
     this.board = new Board(40, 80, 10);
+    this.enemies = [
+      new Enemy(10, 10, 10, this.board),
+      new Enemy(30, 5, 10, this.board),
+      new Enemy(5, 25, 10, this.board),
+    ];
     this.player = new Player(
       1,
       1,
       10,
       this.board,
       this.handleGameOver.bind(this),
-      this.updateLives.bind(this)
+      this.handleLoseLife.bind(this),
+      this.handleCaptureArea.bind(this)
     );
-
-    this.enemies = [
-      new Enemy(10, 10, 10, this.board),
-      new Enemy(30, 5, 10, this.board),
-      new Enemy(5, 25, 10, this.board),
-    ];
+    this.renderer = new Renderer(canvas, this.board, this.player, this.enemies, 10);
+    this.regionFiller = new RegionFiller(this.board, this.enemies);
 
     this.running = false;
     this.lastTime = 0;
@@ -29,7 +33,6 @@ class Game {
     this.gameSpeed = 50;
 
     this.adjustCanvasSize();
-    this.displayLives(3);
   }
 
   start() {
@@ -56,33 +59,37 @@ class Game {
       this.accumulator -= this.gameSpeed;
     }
 
-    this.draw();
+    this.renderer.draw();
     requestAnimationFrame((t) => this.loop(t));
   }
 
   update() {
     this.player.update();
     this.enemies.forEach((enemy) => enemy.update());
+    this.checkCollisions();
+  }
+
+  checkCollisions() {
+    this.enemies.forEach((enemy) => {
+      if (this.player.x === enemy.x && this.player.y === enemy.y) {
+        console.log("Colisión detectada entre Player y Enemy");
+        this.player.loseLife();
+      }
+    });
+  }
+
+  handleCaptureArea() {
+    this.regionFiller.fillCapturedRegions();
+    this.board.capturePath();
+  }
+
+  handleLoseLife(lives) {
+    console.log(`Perdiste una vida. Te quedan ${lives}`);
   }
 
   handleGameOver() {
     this.running = false;
     alert("Game Over: Te has quedado sin vidas.");
-  }
-
-  updateLives(lives) {
-    this.displayLives(lives);
-  }
-
-  displayLives(lives) {
-    console.log("Lives:", lives);
-  }
-
-  draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.board.draw(this.ctx);
-    this.player.draw(this.ctx);
-    this.enemies.forEach((enemy) => enemy.draw(this.ctx));
   }
 }
 
