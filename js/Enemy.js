@@ -6,27 +6,24 @@ class Enemy {
     { x: -1, y: -1 },
   ];
 
-  constructor(x, y, tileSize, board) {
+  constructor(x, y, tileSize, board, onCollision) {
+    this.initialX = x;
+    this.initialY = y;
     this.x = x;
     this.y = y;
     this.tileSize = tileSize;
     this.board = board;
-
     this.direction = this.getRandomDirection();
+    this.moving = true;
+    this.onCollision = onCollision;
+  }
+
+  resumeMovement() {
+    this.moving = true;
   }
 
   getRandomDirection() {
     return this.directionMap[Math.floor(Math.random() * this.directionMap.length)];
-  }
-
-  canMove(nextX, nextY) {
-    return (
-      nextX >= 0 &&
-      nextX < this.board.cols &&
-      nextY >= 0 &&
-      nextY < this.board.rows &&
-      (this.board.grid[nextY][nextX] === 0 || this.board.grid[nextY][nextX] === 2)
-    );
   }
 
   getNextPosition() {
@@ -37,59 +34,42 @@ class Enemy {
   }
 
   bounceIfNecessary() {
-    const nextX = this.x + this.direction.x;
-    const nextY = this.y + this.direction.y;
+    let nextX = this.x + this.direction.x;
+    let nextY = this.y + this.direction.y;
 
-    const hitWallX =
-      nextX < 0 || nextX >= this.board.cols || this.board.grid[this.y]?.[nextX] === 1;
-    const hitWallY =
-      nextY < 0 || nextY >= this.board.rows || this.board.grid[nextY]?.[this.x] === 1;
+    let hitX = !this.canMoveTo(nextX, this.y);
+    let hitY = !this.canMoveTo(this.x, nextY);
 
-    if (hitWallX && hitWallY) {
+    if (hitX) {
       this.direction.x *= -1;
+      nextX = this.x + this.direction.x;
+    }
+
+    if (hitY) {
       this.direction.y *= -1;
-    } else {
-      if (hitWallX) this.direction.x *= -1;
-      if (hitWallY) this.direction.y *= -1;
+      nextY = this.y + this.direction.y;
     }
 
-    const newNextX = this.x + this.direction.x;
-    const newNextY = this.y + this.direction.y;
-
-    if (this.canMove(newNextX, newNextY)) {
-      this.x = newNextX;
-      this.y = newNextY;
-    } else {
-      if (this.canMove(this.x + this.direction.x, this.y)) {
-        this.x += this.direction.x;
-      } else if (this.canMove(this.x, this.y + this.direction.y)) {
-        this.y += this.direction.y;
-      }
-    }
-  }
-
-  isInRestrictedArea() {
-    return this.board.grid[this.y][this.x] === 1;
-  }
-
-  move() {
-    const { x: nextX, y: nextY } = this.getNextPosition();
-
-    this.bounceIfNecessary(nextX, nextY);
-
-    if (this.canMove(nextX, nextY)) {
-      this.x = nextX;
-      this.y = nextY;
-    }
+    return { nextX, nextY };
   }
 
   update() {
     this.move();
   }
 
-  draw(ctx) {
-    ctx.fillStyle = "white";
-    ctx.fillRect(this.x * this.tileSize, this.y * this.tileSize, this.tileSize, this.tileSize);
+  move() {
+    if (!this.moving) {
+      return;
+    }
+
+    const { nextX, nextY } = this.bounceIfNecessary();
+
+    this.x = nextX;
+    this.y = nextY;
+  }
+
+  stopMovement() {
+    this.moving = false;
   }
 }
 

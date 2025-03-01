@@ -59,11 +59,15 @@ class Board {
     return this.grid[y][x];
   }
 
-  isCapturedArea(x, y) {
+  isFreeCell(x, y) {
+    return this.getCellType(x, y) === 0;
+  }
+
+  isCapturedCell(x, y) {
     return this.getCellType(x, y) === 1;
   }
 
-  isTrail(x, y) {
+  isTrailCell(x, y) {
     return this.getCellType(x, y) === 2;
   }
 }

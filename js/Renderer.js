@@ -33,7 +33,7 @@ class Renderer {
   }
 
   drawPlayer() {
-    this.ctx.fillStyle = "white";
+    this.ctx.fillStyle = "DeepPink";
     this.ctx.fillRect(
       this.player.x * this.tileSize,
       this.player.y * this.tileSize,

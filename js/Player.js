@@ -6,7 +6,9 @@ class Player {
     ArrowRight: { x: 1, y: 0 },
   };
 
-  constructor(x, y, tileSize, board, onGameOver, onLoseLife, onCaptureArea) {
+  constructor(x, y, tileSize, board, onCaptureArea, onCollision) {
+    this.initialX = x;
+    this.initialY = y;
     this.x = x;
     this.y = y;
     this.tileSize = tileSize;
@@ -15,11 +17,9 @@ class Player {
     this.moving = false;
     this.wasOutside = false;
     this.lives = 3;
-    this.lastSafeX = x;
-    this.lastSafeY = y;
-    this.onGameOver = onGameOver;
-    this.onLoseLife = onLoseLife;
     this.onCaptureArea = onCaptureArea;
+    this.onCollision = onCollision;
+    this.paused = false;
 
     this.initEventListeners();
   }
@@ -30,18 +30,25 @@ class Player {
 
   handleKeyDown(event) {
     if (this.directionMap[event.key]) {
-      if (!this.moving) {
-        this.wasOutside = false;
+      if (this.paused) {
+        return;
       }
+      this.wasOutside = false;
       this.moving = true;
       this.direction = event.key;
     }
   }
+  update() {
+    this.move();
+  }
 
   move() {
-    if (!this.moving || !this.direction) return;
+    if (!this.moving || !this.direction) {
+      return;
+    }
 
     const { x, y } = this.directionMap[this.direction];
+
     const nextX = this.x + x;
     const nextY = this.y + y;
 
@@ -51,7 +58,7 @@ class Player {
     }
 
     if (this.collidesWithTrail(nextX, nextY)) {
-      this.loseLife();
+      this.onCollision();
       return;
     }
 
@@ -62,15 +69,24 @@ class Player {
     return this.board.isValidPosition(x, y);
   }
 
+  stopMovement() {
+    this.moving = false;
+    this.direction = null;
+  }
+
   collidesWithTrail(x, y) {
-    return this.board.isTrail(x, y);
+    return this.board.isTrailCell(x, y);
+  }
+
+  loseLife() {
+    this.lives -= 1;
   }
 
   updatePosition(x, y) {
     this.x = x;
     this.y = y;
 
-    if (this.wasOutside && this.board.isCapturedArea(x, y)) {
+    if (this.wasOutside && this.board.isCapturedCell(x, y)) {
       this.captureArea();
       return;
     }
@@ -84,39 +100,30 @@ class Player {
   }
 
   trackMovement() {
-    if (!this.board.isCapturedArea(this.x, this.y)) {
+    if (!this.board.isCapturedCell(this.x, this.y)) {
       this.wasOutside = true;
       this.board.markPath(this.x, this.y);
-    } else {
-      this.lastSafeX = this.x;
-      this.lastSafeY = this.y;
     }
   }
 
-  stopMovement() {
-    this.moving = false;
-    this.direction = null;
+  resetInitialPosition() {
+    this.x = this.initialX;
+    this.y = this.initialY;
   }
 
-  loseLife() {
-    this.lives -= 1;
-    this.onLoseLife(this.lives);
-
-    if (this.lives <= 0) {
-      this.onGameOver();
-      return;
-    }
-
-    this.board.clearPath();
-
-    this.x = this.lastSafeX;
-    this.y = this.lastSafeY;
-
-    this.stopMovement();
+  getNextCell() {
+    return {
+      x: this.x + this.direction.x,
+      y: this.y + this.direction.y,
+    };
   }
 
-  update() {
-    this.move();
+  pause() {
+    this.paused = true;
+  }
+
+  resume() {
+    this.paused = false;
   }
 }
 

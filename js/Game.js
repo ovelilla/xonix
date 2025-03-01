@@ -1,5 +1,6 @@
 import Board from "./Board.js";
-import Enemy from "./Enemy.js";
+import CapturedEnemy from "./CapturedEnemy.js";
+import FreeEnemy from "./FreeEnemy.js";
 import Player from "./Player.js";
 import RegionFiller from "./RegionFiller.js";
 import Renderer from "./Renderer.js";
@@ -11,18 +12,18 @@ class Game {
 
     this.board = new Board(40, 80, 10);
     this.enemies = [
-      new Enemy(10, 10, 10, this.board),
-      new Enemy(30, 5, 10, this.board),
-      new Enemy(5, 25, 10, this.board),
+      new CapturedEnemy(0, 1, 10, this.board, this.handleCollision.bind(this)),
+      new FreeEnemy(10, 10, 10, this.board, this.handleCollision.bind(this)),
+      new FreeEnemy(30, 5, 10, this.board, this.handleCollision.bind(this)),
+      new FreeEnemy(5, 25, 10, this.board, this.handleCollision.bind(this)),
     ];
     this.player = new Player(
-      1,
-      1,
+      this.board.cols / 2,
+      0,
       10,
       this.board,
-      this.handleGameOver.bind(this),
-      this.handleLoseLife.bind(this),
-      this.handleCaptureArea.bind(this)
+      this.handleCaptureArea.bind(this),
+      this.handleCollision.bind(this)
     );
     this.renderer = new Renderer(canvas, this.board, this.player, this.enemies, 10);
     this.regionFiller = new RegionFiller(this.board, this.enemies);
@@ -56,10 +57,10 @@ class Game {
 
     while (this.accumulator >= this.gameSpeed) {
       this.update();
+      this.renderer.draw();
       this.accumulator -= this.gameSpeed;
     }
 
-    this.renderer.draw();
     requestAnimationFrame((t) => this.loop(t));
   }
 
@@ -69,20 +70,60 @@ class Game {
     this.checkCollisions();
   }
 
-  checkCollisions() {
-    this.enemies.forEach((enemy) => {
-      if (this.player.x === enemy.x && this.player.y === enemy.y) {
-        console.log("Colisión detectada entre Player y Enemy");
-        this.player.loseLife();
-      }
+  async checkCollisions() {
+    this.enemies.forEach(async (enemy) => {
+      const px = this.player.x;
+      const py = this.player.y;
 
-      if (this.board.isTrail(enemy.x, enemy.y)) {
-        console.log("Colisión detectada entre Enemy y rastro del Player");
-        this.player.loseLife();
-        this.board.clearPath();
-        // this.player.reset();
+      const ex = enemy.x;
+      const ey = enemy.y;
+
+      const nextEx = ex + enemy.direction.x;
+      const nextEy = ey + enemy.direction.y;
+
+      // if (
+      //   (this.board.isFreeCell(ex, ey) && this.board.isCapturedCell(nextEx, nextEy)) ||
+      //   (this.board.isCapturedCell(ex, ey) && this.board.isFreeCell(nextEx, nextEy))
+      // ) {
+      //   return;
+      // }
+
+      const next = [
+        { x: -1, y: -1 },
+        { x: 0, y: -1 },
+        { x: 1, y: -1 },
+        { x: -1, y: 0 },
+        { x: 1, y: 0 },
+        { x: -1, y: 1 },
+        { x: 0, y: 1 },
+        { x: 1, y: 1 },
+      ];
+
+      const willCollide = next.some(({ x, y }) => ex + x === px && ey + y === py);
+
+      if (!this.player.paused && willCollide) {
+        this.handleCollision();
       }
     });
+  }
+
+  async handleCollision() {
+    this.player.loseLife();
+
+    if (this.player.lives === 0) {
+      this.gameOver();
+      return;
+    }
+
+    this.player.pause();
+    this.player.stopMovement();
+    this.enemies.forEach((enemy) => enemy.stopMovement());
+    await this.sleep(3000);
+    this.player.resetInitialPosition();
+    this.enemies.forEach((enemy) => enemy.resetInitialPosition && enemy.resetInitialPosition());
+    this.player.resume();
+    this.enemies.forEach((enemy) => enemy.resumeMovement());
+    this.board.clearPath();
   }
 
   handleCaptureArea() {
@@ -90,13 +131,13 @@ class Game {
     this.board.capturePath();
   }
 
-  handleLoseLife(lives) {
-    console.log(`Perdiste una vida. Te quedan ${lives}`);
+  gameOver() {
+    this.running = false;
+    // alert("Game Over: Te has quedado sin vidas.");
   }
 
-  handleGameOver() {
-    this.running = false;
-    alert("Game Over: Te has quedado sin vidas.");
+  sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
