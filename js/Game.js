@@ -21,8 +21,8 @@ class Game {
     this.board = new Board(this.rows, this.cols, this.tileSize);
     this.enemies = [
       new CapturedEnemy(
-        this.board.cols - 1,
-        this.board.rows,
+        this.board.cols - 2,
+        this.board.rows - 1,
         this.board,
         this.handleCollision.bind(this)
       ),
