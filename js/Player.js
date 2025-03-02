@@ -32,7 +32,8 @@ class Player {
       if (this.paused) {
         return;
       }
-      this.wasOutside = false;
+      console.log("key down", event.key);
+      // this.wasOutside = false;
       this.moving = true;
       this.direction = event.key;
     }
@@ -87,6 +88,7 @@ class Player {
 
     if (this.wasOutside && this.board.isCapturedCell(x, y)) {
       this.captureArea();
+      this.wasOutside = false;
       return;
     }
 
