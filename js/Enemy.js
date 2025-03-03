@@ -53,7 +53,6 @@ class Enemy {
   }
 
   update() {
-    if (!this.moving) return;
     this.move();
   }
 

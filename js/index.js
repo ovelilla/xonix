@@ -14,20 +14,15 @@ let game = null;
 
 startButton.addEventListener("click", () => {
   startScreen.classList.add("hidden");
-  // loadingScreen.classList.remove("hidden");
+  loadingScreen.classList.remove("hidden");
 
-  gameScreen.classList.remove("hidden");
-  canvas.classList.remove("hidden");
-
-  // animateProgressBar(100, () => {
-  //   console.log("progress bar finished");
-  //   loadingScreen.classList.add("hidden");
-  //   gameScreen.classList.remove("hidden");
-  //   canvas.classList.remove("hidden");
-  game = new Game(canvas, canvasScreen, handleGameOver);
-  // game.reset();
-  game.start();
-  // });
+  animateProgressBar(1000, () => {
+    loadingScreen.classList.add("hidden");
+    gameScreen.classList.remove("hidden");
+    canvas.classList.remove("hidden");
+    game = new Game(canvas, canvasScreen, handleGameOver);
+    game.start();
+  });
 });
 
 function animateProgressBar(duration, callback) {

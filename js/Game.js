@@ -71,6 +71,7 @@ class Game {
 
     if (this.lastTime === null) {
       this.lastTime = timestamp;
+      requestAnimationFrame((t) => this.loop(t));
       return;
     }
 
@@ -80,7 +81,6 @@ class Game {
 
     while (this.accumulator >= this.gameSpeed) {
       this.update();
-      this.renderer.draw();
       this.accumulator -= this.gameSpeed;
     }
 
@@ -92,6 +92,7 @@ class Game {
     this.enemies.forEach((enemy) => enemy.update());
     this.stats.update();
     this.checkCollisions();
+    this.renderer.draw();
   }
 
   async checkCollisions() {

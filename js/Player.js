@@ -106,6 +106,7 @@ class Player {
   }
 
   resetInitialPosition() {
+    this.wasOutside = false;
     this.x = this.initialX;
     this.y = this.initialY;
   }
