@@ -7,10 +7,11 @@ import Renderer from "./Renderer.js";
 import Stats from "./Stats.js";
 import TouchControls from "./TouchControls.js";
 class Game {
-  constructor(canvas, container, onGameOver) {
+  constructor(canvas, container, onGameOver, difficultyConfig) {
     this.canvas = canvas;
     this.container = container;
     this.onGameOver = onGameOver;
+    this.difficultyConfig = difficultyConfig;
 
     this.ctx = canvas.getContext("2d");
 
@@ -23,12 +24,30 @@ class Game {
     this.cols = Math.floor(this.width / this.tileSize);
 
     this.board = new Board(this.rows, this.cols, this.tileSize);
-    this.enemies = [
-      new CapturedEnemy(this.cols - 4, this.rows - 1, this.board, this.handleCollision.bind(this)),
-      new FreeEnemy(10, 10, this.board, this.handleCollision.bind(this)),
-      new FreeEnemy(30, 5, this.board, this.handleCollision.bind(this)),
-      new FreeEnemy(5, 25, this.board, this.handleCollision.bind(this)),
+    this.enemies = [];
+    const capturedPositions = [
+      { x: 2, y: this.rows - 1 },
+      { x: this.cols - 2, y: this.rows - 1 },
+      { x: Math.round(this.cols / 2), y: this.rows - 1 },
     ];
+
+    for (let i = 0; i < difficultyConfig.capturedEnemies; i++) {
+      const pos = capturedPositions[i % capturedPositions.length];
+      this.enemies.push(
+        new CapturedEnemy(pos.x, pos.y, this.board, this.handleCollision.bind(this))
+      );
+    }
+
+    const minX = 2;
+    const maxX = this.cols - 3;
+    const minY = 2;
+    const maxY = this.rows - 3;
+    for (let i = 0; i < difficultyConfig.freeEnemies; i++) {
+      const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+      const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+      this.enemies.push(new FreeEnemy(x, y, this.board, this.handleCollision.bind(this)));
+    }
+
     this.player = new Player(
       Math.round(this.board.cols / 2),
       0,
@@ -44,7 +63,7 @@ class Game {
     this.running = false;
     this.lastTime = 0;
     this.accumulator = 0;
-    this.gameSpeed = 50;
+    this.gameSpeed = difficultyConfig.gameSpeed;
 
     this.touchStartX = 0;
     this.touchStartY = 0;

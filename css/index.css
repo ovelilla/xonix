@@ -87,6 +87,7 @@ body {
 
 .start-screen,
 .loading-screen,
+.difficulty-screen,
 .canvas-screen,
 .game-over-screen {
   display: flex;
@@ -102,6 +103,7 @@ body {
 
 .start-screen.hidden,
 .loading-screen.hidden,
+.difficulty-screen.hidden,
 .game-screen.hidden,
 .canvas-screen.hidden,
 .game-over-screen.hidden,
