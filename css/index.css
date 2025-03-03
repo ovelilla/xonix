@@ -48,7 +48,7 @@ h6 {
 body {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
   width: 100%;
   background-color: hsla(229, 48%, 20%, 1);
@@ -64,33 +64,149 @@ body {
   font-style: normal;
 }
 
+@media screen and (min-width: 768px) {
+  .body {
+    align-items: center;
+  }
+}
+
 .container {
+  display: flex;
+  width: 100%;
+  max-width: 1024px;
+  aspect-ratio: 3/4;
+  padding: 20px;
+  gap: 16px;
+}
+
+@media screen and (min-width: 768px) {
+  .container {
+    aspect-ratio: 4/3;
+  }
+}
+
+.start-screen,
+.loading-screen,
+.canvas-screen,
+.game-over {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 1024px;
-  aspect-ratio: 4/3;
-  padding: 20px;
+  height: 100%;
+  gap: 32px;
+  text-transform: uppercase;
+  color: #ffffff80;
+}
+
+.start-screen.hidden,
+.loading-screen.hidden,
+.game-screen.hidden,
+.canvas-screen.hidden,
+.game-over-screen.hidden,
+.game-screen canvas.hidden {
+  display: none;
+}
+
+.start-screen .title {
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.loading-screen .title {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.game-over-screen .title {
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.loading-screen .loading-bar {
+  display: flex;
+  width: 100%;
+  height: 40px;
+  background-color: #ffffff80;
+}
+
+.loading-screen .loading-bar .progress-bar {
+  width: 0%;
+  height: 100%;
+  background-color: #ffffff80;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 48px;
+  height: 64px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #ffffff80;
+  background-color: transparent;
+  border: 2px solid #ffffff80;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #ffffff10;
+}
+
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
   gap: 16px;
 }
 
 .stats {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   width: 100%;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 600;
   text-transform: uppercase;
   color: #ffffff80;
+}
+
+@media screen and (min-width: 768px) {
+  .stats {
+    font-size: 2rem;
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .stats .score,
 .stats .progress,
 .stats .lives,
 .stats .time {
-  flex: 1 1 25%;
   display: flex;
   gap: 8px;
+}
+
+@media screen and (min-width: 768px) {
+  .stats .score,
+  .stats .progress,
+  .stats .lives,
+  .stats .time {
+    justify-content: center;
+  }
+}
+
+.game-over-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 16px;
+  text-transform: uppercase;
+  color: #ffffff80;
 }

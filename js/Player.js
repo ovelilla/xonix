@@ -124,6 +124,11 @@ class Player {
   resume() {
     this.paused = false;
   }
+
+  reset() {
+    this.lives = 3;
+    this.resetInitialPosition();
+  }
 }
 
 export default Player;

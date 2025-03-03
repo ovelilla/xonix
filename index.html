@@ -19,23 +19,46 @@
   </head>
   <body>
     <div class="container" id="container">
-      <canvas id="canvas"></canvas>
-      <div class="stats">
-        <div class="score">
-          <span>Score: </span>
-          <span id="score">0000</span>
+      <div class="start-screen" id="start-screen">
+        <h1 class="title">Project Xonix</h1>
+        <button class="button" id="start-button">Start</button>
+      </div>
+
+      <div class="loading-screen hidden" id="loading-screen">
+        <h2 class="title">Loading...</h2>
+        <div class="loading-bar" id="loading-bar">
+          <div class="progress-bar" id="progress-bar"></div>
         </div>
-        <div class="progress">
-          <span>Progress: </span>
-          <span id="progress">45%</span>
+      </div>
+
+      <div class="game-screen hidden" id="game-screen">
+        <div class="canvas-screen" id="canvas-screen">
+          <canvas id="canvas"></canvas>
         </div>
-        <div class="lives">
-          <span>Lives: </span>
-          <span id="lives">3</span>
+
+        <div class="game-over-screen hidden" id="game-over-screen">
+          <h2 class="title">Game Over</h2>
+
+          <button class="button" id="restart-button">Restart</button>
         </div>
-        <div class="time">
-          <span>Time: </span>
-          <span id="time"></span>
+
+        <div class="stats">
+          <div class="score">
+            <span>Score: </span>
+            <span id="score">0000</span>
+          </div>
+          <div class="progress">
+            <span>Progress: </span>
+            <span id="progress">0%</span>
+          </div>
+          <div class="lives">
+            <span>Lives: </span>
+            <span id="lives">3</span>
+          </div>
+          <div class="time">
+            <span>Time: </span>
+            <span id="time">00:00</span>
+          </div>
         </div>
       </div>
     </div>

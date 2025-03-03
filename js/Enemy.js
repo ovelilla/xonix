@@ -70,6 +70,16 @@ class Enemy {
   stopMovement() {
     this.moving = false;
   }
+
+  resetInitialPosition() {
+    this.x = this.initialX;
+    this.y = this.initialY;
+    this.direction = this.getRandomDirection();
+  }
+
+  reset() {
+    this.resetInitialPosition();
+  }
 }
 
 export default Enemy;

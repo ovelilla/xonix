@@ -7,27 +7,25 @@ import Renderer from "./Renderer.js";
 import Stats from "./Stats.js";
 import TouchControls from "./TouchControls.js";
 class Game {
-  constructor(canvas, container) {
+  constructor(canvas, container, onGameOver) {
     this.canvas = canvas;
+    this.container = container;
+    this.onGameOver = onGameOver;
+
     this.ctx = canvas.getContext("2d");
 
-    this.tileSize = 16;
+    this.tileSize = 10;
+    this.adjustCanvasSize();
 
-    this.height = container.offsetHeight;
-    this.width = container.offsetWidth;
+    this.height = this.container.offsetHeight;
+    this.width = this.container.offsetWidth;
 
     this.rows = Math.floor(this.height / this.tileSize);
     this.cols = Math.floor(this.width / this.tileSize);
 
     this.board = new Board(this.rows, this.cols, this.tileSize);
     this.enemies = [
-      new CapturedEnemy(
-        this.board.cols - 2,
-        this.board.rows - 1,
-        this.board,
-        this.handleCollision.bind(this)
-      ),
-
+      new CapturedEnemy(this.cols - 3, this.rows, this.board, this.handleCollision.bind(this)),
       new FreeEnemy(10, 10, this.board, this.handleCollision.bind(this)),
       new FreeEnemy(30, 5, this.board, this.handleCollision.bind(this)),
       new FreeEnemy(5, 25, this.board, this.handleCollision.bind(this)),
@@ -57,6 +55,7 @@ class Game {
 
   start() {
     this.running = true;
+    this.stats.reset();
     this.loop(performance.now());
   }
 
@@ -138,12 +137,14 @@ class Game {
     this.player.pause();
     this.player.stopMovement();
     this.enemies.forEach((enemy) => enemy.stopMovement());
+    this.stats.pause();
     await this.sleep(3000);
     this.player.resetInitialPosition();
     this.enemies.forEach((enemy) => enemy.resetInitialPosition && enemy.resetInitialPosition());
     this.player.resume();
     this.enemies.forEach((enemy) => enemy.resumeMovement());
     this.board.clearPath();
+    this.stats.resume();
   }
 
   handleCaptureArea() {
@@ -152,12 +153,20 @@ class Game {
   }
 
   gameOver() {
-    this.running = false;
-    // alert("Game Over: Te has quedado sin vidas.");
+    this.stats.pause();
+    this.onGameOver();
   }
 
   sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  reset() {
+    this.running = false;
+    this.player.reset();
+    this.enemies.forEach((enemy) => enemy.resetInitialPosition());
+    this.board.reset();
+    this.stats.reset();
   }
 }
 

@@ -2,7 +2,7 @@ class Renderer {
   cellColors = {
     0: "transparent",
     1: "#ffffff80",
-    2: "DeepPink",
+    2: "#bb0fe2",
   };
 
   constructor(canvas, board, player, enemies, tileSize) {
@@ -33,7 +33,7 @@ class Renderer {
   }
 
   drawPlayer() {
-    this.ctx.fillStyle = "DeepPink";
+    this.ctx.fillStyle = "#bb0fe2";
     this.ctx.fillRect(
       this.player.x * this.tileSize,
       this.player.y * this.tileSize,

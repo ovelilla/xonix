@@ -84,6 +84,10 @@ class Board {
   isTrailCell(x, y) {
     return this.getCellType(x, y) === 2;
   }
+
+  reset() {
+    this.grid = this.createBoard();
+  }
 }
 
 export default Board;

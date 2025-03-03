@@ -10,6 +10,9 @@ class Stats {
 
     this.startTime = performance.now();
     this.elapsedTime = 0;
+    this.paused = false;
+    this.pauseStartTime = 0;
+    this.totalPauseDuration = 0;
   }
 
   formatTime(seconds) {
@@ -19,15 +22,42 @@ class Stats {
   }
 
   update() {
-    this.scoreContainer.textContent = this.board.getScore();
-
-    this.progressContainer.textContent = `${this.board.getProgress()}%`;
-
-    this.livesContainer.textContent = this.player.lives;
+    if (this.paused) return;
 
     const now = performance.now();
-    this.elapsedTime = (now - this.startTime) / 1000;
+    this.elapsedTime = (now - this.startTime - this.totalPauseDuration) / 1000;
     this.timeContainer.textContent = this.formatTime(this.elapsedTime);
+
+    this.scoreContainer.textContent = this.board.getScore();
+    this.progressContainer.textContent = `${this.board.getProgress()}%`;
+    this.livesContainer.textContent = this.player.lives;
+  }
+
+  pause() {
+    if (!this.paused) {
+      this.paused = true;
+      this.pauseStartTime = performance.now();
+    }
+  }
+
+  resume() {
+    if (this.paused) {
+      this.paused = false;
+      this.totalPauseDuration += performance.now() - this.pauseStartTime;
+    }
+  }
+
+  reset() {
+    this.startTime = performance.now();
+    this.elapsedTime = 0;
+    this.paused = false;
+    this.pauseStartTime = 0;
+    this.totalPauseDuration = 0;
+
+    this.timeContainer.textContent = this.formatTime(0);
+
+    this.scoreContainer.textContent = this.board.getScore();
+    this.progressContainer.textContent = `${this.board.getProgress()}%`;
   }
 }
 
