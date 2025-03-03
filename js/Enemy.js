@@ -13,7 +13,7 @@ class Enemy {
     this.y = y;
     this.board = board;
     this.direction = this.getRandomDirection();
-    this.moving = true;
+    this.moving = false;
     this.onCollision = onCollision;
   }
 
@@ -53,6 +53,7 @@ class Enemy {
   }
 
   update() {
+    if (!this.moving) return;
     this.move();
   }
 
@@ -78,7 +79,10 @@ class Enemy {
   }
 
   reset() {
-    this.resetInitialPosition();
+    this.direction = this.getRandomDirection();
+    this.moving = false;
+    this.x = this.initialX;
+    this.y = this.initialY;
   }
 }
 

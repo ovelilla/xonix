@@ -88,7 +88,7 @@ body {
 .start-screen,
 .loading-screen,
 .canvas-screen,
-.game-over {
+.game-over-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -197,16 +197,4 @@ body {
   .stats .time {
     justify-content: center;
   }
-}
-
-.game-over-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  gap: 16px;
-  text-transform: uppercase;
-  color: #ffffff80;
 }

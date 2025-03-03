@@ -127,7 +127,11 @@ class Player {
 
   reset() {
     this.lives = 3;
-    this.resetInitialPosition();
+    this.moving = false;
+    this.paused = false;
+    this.wasOutside = false;
+    this.x = this.initialX;
+    this.y = this.initialY;
   }
 }
 

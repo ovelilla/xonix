@@ -15,7 +15,6 @@ class Game {
     this.ctx = canvas.getContext("2d");
 
     this.tileSize = 10;
-    this.adjustCanvasSize();
 
     this.height = this.container.offsetHeight;
     this.width = this.container.offsetWidth;
@@ -25,7 +24,7 @@ class Game {
 
     this.board = new Board(this.rows, this.cols, this.tileSize);
     this.enemies = [
-      new CapturedEnemy(this.cols - 3, this.rows, this.board, this.handleCollision.bind(this)),
+      new CapturedEnemy(this.cols - 4, this.rows - 1, this.board, this.handleCollision.bind(this)),
       new FreeEnemy(10, 10, this.board, this.handleCollision.bind(this)),
       new FreeEnemy(30, 5, this.board, this.handleCollision.bind(this)),
       new FreeEnemy(5, 25, this.board, this.handleCollision.bind(this)),
@@ -56,6 +55,7 @@ class Game {
   start() {
     this.running = true;
     this.stats.reset();
+    this.enemies.forEach((enemy) => enemy.resumeMovement());
     this.loop(performance.now());
   }
 
@@ -69,9 +69,14 @@ class Game {
       return;
     }
 
-    const deltaTime = timestamp - this.lastTime;
+    if (this.lastTime === null) {
+      this.lastTime = timestamp;
+      return;
+    }
+
+    const frameTime = Math.min(timestamp - this.lastTime, 100);
     this.lastTime = timestamp;
-    this.accumulator += deltaTime;
+    this.accumulator += frameTime;
 
     while (this.accumulator >= this.gameSpeed) {
       this.update();
@@ -85,8 +90,8 @@ class Game {
   update() {
     this.player.update();
     this.enemies.forEach((enemy) => enemy.update());
-    this.checkCollisions();
     this.stats.update();
+    this.checkCollisions();
   }
 
   async checkCollisions() {
@@ -128,16 +133,17 @@ class Game {
 
   async handleCollision() {
     this.player.loseLife();
+    this.stats.update(this.player.lives);
+    this.player.pause();
+    this.player.stopMovement();
+    this.enemies.forEach((enemy) => enemy.stopMovement());
+    this.stats.pause();
 
     if (this.player.lives === 0) {
       this.gameOver();
       return;
     }
 
-    this.player.pause();
-    this.player.stopMovement();
-    this.enemies.forEach((enemy) => enemy.stopMovement());
-    this.stats.pause();
     await this.sleep(3000);
     this.player.resetInitialPosition();
     this.enemies.forEach((enemy) => enemy.resetInitialPosition && enemy.resetInitialPosition());
@@ -153,7 +159,7 @@ class Game {
   }
 
   gameOver() {
-    this.stats.pause();
+    this.running = false;
     this.onGameOver();
   }
 
@@ -162,9 +168,8 @@ class Game {
   }
 
   reset() {
-    this.running = false;
     this.player.reset();
-    this.enemies.forEach((enemy) => enemy.resetInitialPosition());
+    this.enemies.forEach((enemy) => enemy.reset());
     this.board.reset();
     this.stats.reset();
   }
