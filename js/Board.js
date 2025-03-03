@@ -4,12 +4,26 @@ class Board {
     this.cols = cols;
     this.tileSize = tileSize;
     this.grid = this.createBoard();
+    this.totalFreeCells = this.countFreeCells();
   }
 
   createBoard() {
     return Array.from({ length: this.rows }, (_, row) =>
       Array.from({ length: this.cols }, (_, col) => (this.isBorderCell(row, col) ? 1 : 0))
     );
+  }
+
+  countFreeCells() {
+    return this.grid.flat().filter((cell) => cell === 0 || cell === 2).length;
+  }
+
+  getProgress() {
+    const remainingFreeCells = this.countFreeCells();
+    return ((1 - remainingFreeCells / this.totalFreeCells) * 100).toFixed(2);
+  }
+
+  getScore() {
+    return this.totalFreeCells - this.countFreeCells();
   }
 
   isBorderCell(row, col) {

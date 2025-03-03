@@ -4,19 +4,20 @@ import FreeEnemy from "./FreeEnemy.js";
 import Player from "./Player.js";
 import RegionFiller from "./RegionFiller.js";
 import Renderer from "./Renderer.js";
+import Stats from "./Stats.js";
 import TouchControls from "./TouchControls.js";
 class Game {
-  constructor(canvas) {
+  constructor(canvas, container) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
 
-    this.tileSize = 10;
+    this.tileSize = 16;
 
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+    this.height = container.offsetHeight;
+    this.width = container.offsetWidth;
 
-    this.rows = Math.floor(window.innerHeight / this.tileSize);
-    this.cols = Math.floor(window.innerWidth / this.tileSize);
+    this.rows = Math.floor(this.height / this.tileSize);
+    this.cols = Math.floor(this.width / this.tileSize);
 
     this.board = new Board(this.rows, this.cols, this.tileSize);
     this.enemies = [
@@ -38,9 +39,10 @@ class Game {
       this.handleCaptureArea.bind(this),
       this.handleCollision.bind(this)
     );
-    this.renderer = new Renderer(canvas, this.board, this.player, this.enemies, 10);
+    this.renderer = new Renderer(canvas, this.board, this.player, this.enemies, this.tileSize);
     this.regionFiller = new RegionFiller(this.board, this.enemies);
     this.touchControls = new TouchControls(this.canvas, this.player);
+    this.stats = new Stats(this.board, this.player);
 
     this.running = false;
     this.lastTime = 0;
@@ -85,6 +87,7 @@ class Game {
     this.player.update();
     this.enemies.forEach((enemy) => enemy.update());
     this.checkCollisions();
+    this.stats.update();
   }
 
   async checkCollisions() {

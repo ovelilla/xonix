@@ -1,7 +1,96 @@
-body {
-  margin: 0;
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  background-color: #363636;
+}
+* {
+  margin: 0;
+}
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+p {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+body {
   display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background-color: hsla(229, 48%, 20%, 1);
+  background-image: radial-gradient(at 81% 69%, hsla(217, 47%, 34%, 0.38) 0px, transparent 50%),
+    radial-gradient(at 40% 19%, hsla(218, 48%, 34%, 1) 0px, transparent 50%),
+    radial-gradient(at 97% 4%, hsla(202, 72%, 37%, 1) 0px, transparent 50%),
+    radial-gradient(at 87% 86%, hsla(229, 39%, 20%, 1) 0px, transparent 50%),
+    radial-gradient(at 18% 91%, hsla(229, 48%, 20%, 1) 0px, transparent 50%),
+    radial-gradient(at 0% 59%, hsla(289, 41%, 39%, 1) 0px, transparent 50%),
+    radial-gradient(at 3% 5%, hsla(167, 100%, 59%, 1) 0px, transparent 50%);
+  font-family: "Oswald", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1024px;
+  aspect-ratio: 4/3;
+  padding: 20px;
+  gap: 16px;
+}
+
+.stats {
+  display: flex;
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #ffffff80;
+}
+
+.stats .score,
+.stats .progress,
+.stats .lives,
+.stats .time {
+  flex: 1 1 25%;
+  display: flex;
+  gap: 8px;
   justify-content: center;
 }

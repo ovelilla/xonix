@@ -1,7 +1,7 @@
 class Renderer {
   cellColors = {
-    0: "black",
-    1: "DarkTurquoise",
+    0: "transparent",
+    1: "#ffffff80",
     2: "DeepPink",
   };
 

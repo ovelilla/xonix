@@ -32,8 +32,6 @@ class Player {
       if (this.paused) {
         return;
       }
-      console.log("key down", event.key);
-      // this.wasOutside = false;
       this.moving = true;
       this.direction = event.key;
     }

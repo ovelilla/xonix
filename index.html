@@ -3,11 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Xonix</title>
+    <meta name="description" content="Xonix game" />
+    <meta name="author" content="Oscar Velilla" />
+    <meta name="keywords" content="Xonix, game, canvas, javascript" />
     <link rel="stylesheet" href="./css/index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <canvas id="canvas"></canvas>
+    <div class="container" id="container">
+      <canvas id="canvas"></canvas>
+      <div class="stats">
+        <div class="score">
+          <span>Score: </span>
+          <span id="score">0000</span>
+        </div>
+        <div class="progress">
+          <span>Progress: </span>
+          <span id="progress">45%</span>
+        </div>
+        <div class="lives">
+          <span>Lives: </span>
+          <span id="lives">3</span>
+        </div>
+        <div class="time">
+          <span>Time: </span>
+          <span id="time"></span>
+        </div>
+      </div>
+    </div>
 
     <script src="./js/index.js" type="module"></script>
   </body>
