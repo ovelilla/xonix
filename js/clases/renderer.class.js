@@ -1,8 +1,11 @@
+import CapturedEnemies from "./captured-enemy.class.js";
+import FreeEnemies from "./free-enemy.class.js";
+
 class Renderer {
   cellColors = {
     0: "transparent",
     1: "#ffffff80",
-    2: "#bb0fe2",
+    2: "#2decc7",
   };
 
   constructor(canvas, board, player, enemies, tileSize) {
@@ -33,23 +36,56 @@ class Renderer {
   }
 
   drawPlayer() {
-    this.ctx.fillStyle = "#bb0fe2";
+    const padding = 3;
+    const size = this.tileSize - padding * 2;
+
+    this.ctx.strokeStyle = "#2decc7";
+    this.ctx.lineWidth = padding;
+    this.ctx.strokeRect(
+      this.player.x * this.tileSize + padding,
+      this.player.y * this.tileSize + padding,
+      size,
+      size
+    );
+
+    this.ctx.fillStyle = "#ffffff";
     this.ctx.fillRect(
-      this.player.x * this.tileSize,
-      this.player.y * this.tileSize,
-      this.tileSize,
-      this.tileSize
+      this.player.x * this.tileSize + padding,
+      this.player.y * this.tileSize + padding,
+      size,
+      size
     );
   }
 
   drawEnemies() {
-    this.ctx.fillStyle = "white";
+    const padding = 3;
+    const size = this.tileSize - padding * 2;
+
     this.enemies.forEach((enemy) => {
+      if (enemy instanceof CapturedEnemies) {
+        this.ctx.strokeStyle = "#ffffff";
+      } else if (enemy instanceof FreeEnemies) {
+        this.ctx.strokeStyle = "#ff00ff";
+      }
+
+      this.ctx.lineWidth = padding;
+      this.ctx.strokeRect(
+        enemy.x * this.tileSize + padding,
+        enemy.y * this.tileSize + padding,
+        size,
+        size
+      );
+
+      if (enemy instanceof CapturedEnemies) {
+        this.ctx.fillStyle = "#ff00ff";
+      } else if (enemy instanceof FreeEnemies) {
+        this.ctx.fillStyle = "#ffffff";
+      }
       this.ctx.fillRect(
-        enemy.x * this.tileSize,
-        enemy.y * this.tileSize,
-        this.tileSize,
-        this.tileSize
+        enemy.x * this.tileSize + padding,
+        enemy.y * this.tileSize + padding,
+        size,
+        size
       );
     });
   }
