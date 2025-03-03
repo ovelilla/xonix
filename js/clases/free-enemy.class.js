@@ -1,4 +1,4 @@
-import Enemy from "./Enemy.js";
+import Enemy from "./enemy.class.js";
 
 class FreeEnemies extends Enemy {
   canMoveTo(x, y) {

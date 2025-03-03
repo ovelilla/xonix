@@ -1,15 +1,17 @@
-import Board from "./Board.js";
-import CapturedEnemy from "./CapturedEnemy.js";
-import FreeEnemy from "./FreeEnemy.js";
-import Player from "./Player.js";
-import RegionFiller from "./RegionFiller.js";
-import Renderer from "./Renderer.js";
-import Stats from "./Stats.js";
-import TouchControls from "./TouchControls.js";
+import Board from "./board.class.js";
+import CapturedEnemy from "./captured-enemy.class.js";
+import FreeEnemy from "./free-enemy.class.js";
+import Player from "./player.class.js";
+import RegionFiller from "./region-filler.class.js";
+import Renderer from "./renderer.class.js";
+import Stats from "./stats.class.js";
+import TouchControls from "./touch-controls.class.js";
+
 class Game {
-  constructor(canvas, container, onGameOver, difficultyConfig) {
+  constructor(canvas, container, onGameWin, onGameOver, difficultyConfig) {
     this.canvas = canvas;
     this.container = container;
+    this.onGameWin = onGameWin;
     this.onGameOver = onGameOver;
     this.difficultyConfig = difficultyConfig;
 
@@ -166,7 +168,6 @@ class Game {
 
     await this.sleep(3000);
     this.player.resetInitialPosition();
-    this.enemies.forEach((enemy) => enemy.resetInitialPosition && enemy.resetInitialPosition());
     this.player.resume();
     this.enemies.forEach((enemy) => enemy.resumeMovement());
     this.board.clearPath();
@@ -176,6 +177,15 @@ class Game {
   handleCaptureArea() {
     this.regionFiller.fillCapturedRegions();
     this.board.capturePath();
+    const progress = this.board.getProgress();
+    if (progress >= 70) {
+      this.gameWin();
+    }
+  }
+
+  gameWin() {
+    this.running = false;
+    this.onGameWin();
   }
 
   gameOver() {

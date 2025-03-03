@@ -1,4 +1,4 @@
-import Enemy from "./Enemy.js";
+import Enemy from "./enemy.class.js";
 
 class CapturedEnemies extends Enemy {
   canMoveTo(x, y) {

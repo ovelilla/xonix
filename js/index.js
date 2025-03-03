@@ -1,4 +1,4 @@
-import Game from "./Game.js";
+import Game from "./clases/game.class.js";
 
 const startScreen = document.getElementById("start-screen");
 const startButton = document.getElementById("start-button");
@@ -9,6 +9,8 @@ const confirmDifficultyButton = document.getElementById("confirm-difficulty-butt
 const progressBar = document.getElementById("progress-bar");
 const gameScreen = document.getElementById("game-screen");
 const canvasScreen = document.getElementById("canvas-screen");
+const gameWinScreen = document.getElementById("game-win-screen");
+const playAgainButton = document.getElementById("play-again-button");
 const gameOverScreen = document.getElementById("game-over-screen");
 const restartButton = document.getElementById("restart-button");
 const canvas = document.getElementById("canvas");
@@ -46,7 +48,7 @@ confirmDifficultyButton.addEventListener("click", () => {
   const selectedLevel = parseInt(difficultySelect.value);
   const config = difficultyLevels[selectedLevel];
 
-  game = new Game(canvas, canvasScreen, handleGameOver, config);
+  game = new Game(canvas, canvasScreen, handleGameWin, handleGameOver, config);
   game.start();
 });
 
@@ -74,6 +76,18 @@ function handleGameOver() {
   canvasScreen.classList.add("hidden");
   gameOverScreen.classList.remove("hidden");
 }
+
+function handleGameWin() {
+  canvasScreen.classList.add("hidden");
+  gameWinScreen.classList.remove("hidden");
+}
+
+playAgainButton.addEventListener("click", () => {
+  gameWinScreen.classList.add("hidden");
+  canvasScreen.classList.remove("hidden");
+  game.reset();
+  game.start();
+});
 
 restartButton.addEventListener("click", () => {
   gameOverScreen.classList.add("hidden");
